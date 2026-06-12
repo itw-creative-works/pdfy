@@ -1,0 +1,4 @@
+node_modules/
+
+# Local sample projects — kept out of the public repo
+.samples/

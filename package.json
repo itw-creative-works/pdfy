@@ -1,0 +1,25 @@
+{
+  "name": "pdfy",
+  "version": "1.0.0",
+  "description": "HTML-to-PDF ebook framework powered by Playwright and Chart.js",
+  "main": "lib/index.js",
+  "scripts": {
+    "postinstall": "npx playwright install chromium",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["pdf", "ebook", "html-to-pdf", "chart", "playwright"],
+  "author": "Ian Wiedenman",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ITW-Creative-Works/pdfy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ITW-Creative-Works/pdfy/issues"
+  },
+  "homepage": "https://github.com/ITW-Creative-Works/pdfy#readme",
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "playwright": "^1.58.2"
+  }
+}
