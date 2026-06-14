@@ -1,11 +1,15 @@
 {
   "name": "pdfy",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "HTML-to-PDF ebook framework powered by Playwright and Chart.js",
   "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "postinstall": "npx playwright install chromium",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/smoke.js"
   },
   "keywords": ["pdf", "ebook", "html-to-pdf", "chart", "playwright"],
   "author": "Ian Wiedenman",
@@ -20,6 +24,7 @@
   "homepage": "https://github.com/ITW-Creative-Works/pdfy#readme",
   "dependencies": {
     "chart.js": "^4.5.1",
+    "fs-jetpack": "^5.1.0",
     "playwright": "^1.58.2"
   }
 }
