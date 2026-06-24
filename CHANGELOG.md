@@ -9,6 +9,17 @@
 - `Fixed` for any bug fixes.
 - `Security` in case of vulnerabilities.
 
+## [2.1.0] - 2026-06-23
+### Added
+- `parts` option on `createProject({ parts: [{ name, build }] })` — define an ordered set of parts once and orchestrate the whole book from a single `project.js`.
+- `project.build(name)` builds one part to its own PDF, matching the name case-insensitively against both the part name and its sanitized filename (throws listing valid parts on a miss).
+- `project.buildAll(renderOverride)` and `render` config (defaults to `['parts', 'combined']`) — builds each part to its own PDF and/or one combined PDF of all parts in order.
+- `project.buildCombined()` — build a single combined PDF from every part.
+- `npx pdfy` CLI (`bin/pdfy.js`, exposed via the package `bin` field): auto-discovers `project.js` and builds all parts; `npx pdfy <name>` builds one part.
+
+### Changed
+- `.gitignore` now excludes macOS `.DS_Store` metadata files.
+
 ## [2.0.0] - 2026-06-14
 ### BREAKING
 - Theme reshaped into structured tokens: `colors` (role names `text`/`muted`/`heading`/`link` replace `navy`/`slate`/`headingColor`), `palette`, `tints` (replaces flat tint keys + `calloutText`), `fonts`, `sizes`, `spacing`, `page`, `footer`.

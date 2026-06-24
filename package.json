@@ -1,8 +1,11 @@
 {
   "name": "pdfy",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "HTML-to-PDF ebook framework powered by Playwright and Chart.js",
   "main": "lib/index.js",
+  "bin": {
+    "pdfy": "bin/pdfy.js"
+  },
   "exports": {
     ".": "./lib/index.js",
     "./package.json": "./package.json"

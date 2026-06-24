@@ -14,7 +14,8 @@ lib/
   theme.js      — DEFAULT_THEME + merge/resolveColor/resolveTheme/palette;
                   the SSOT for every visual decision (colors, palette, tints,
                   fonts, sizes, spacing, page, footer)
-  project.js    — createProject() factory: shared config → pre-configured books
+  project.js    — createProject() factory: shared config → pre-configured books;
+                  optional parts[] with build(name) / buildAll() orchestration
   ebook.js      — Ebook builder: methods push HTML into _parts, charts queue
                   into _charts; one swatches() helper renders every color strip;
                   content components (stats/quote/table/checklist/steps/group)
@@ -29,7 +30,7 @@ test/
   smoke.js      — defaults-only end-to-end build (npm test)
 ```
 
-Local sample/consumer projects live under `.samples/` (gitignored — not part of the repo). Sample scripts `require('pdfy')` via Node package self-reference (enabled by the `exports` field in `package.json`) — they have no `package.json` or `node_modules` of their own; each book defines a shared `project.js` and part scripts call `project.book()`.
+Local sample/consumer projects live under `.samples/` (gitignored — not part of the repo). Sample scripts `require('pdfy')` via Node package self-reference (enabled by the `exports` field in `package.json`) — they have no `package.json` or `node_modules` of their own. Each book defines a `project.js` with a `parts` array; part modules live in `parts/` and export a `function(book)` that pushes content. `node project.js` builds all parts; `node project.js <name>` builds one.
 
 ## Key conventions
 

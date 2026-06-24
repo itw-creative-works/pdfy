@@ -6,17 +6,18 @@ All exports come from the package root:
 const { createProject, Ebook, exportPDF, generateCSS, DEFAULT_THEME } = require('pdfy');
 ```
 
-For multi-part books, the intended pattern is one shared `project.js` per book plus one build script per part.
+For multi-part books, define parts in `project.js` — each part is a module exporting a `function(book)` that pushes content. The project orchestrates building and saving.
 
 ## `createProject(options)`
 
-Define a book project once; every build script imports it.
+Define a book project once. Parts can be built individually or all at once.
 
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `title` | string | `'Ebook'` | Book title — used by `.cover()` and the `{title}` footer token |
 | `theme` | object | `{}` | Theme overrides, deep-merged over `DEFAULT_THEME` ([theming.md](theming.md)) |
 | `output` | object | `{}` | `{ dir = process.cwd(), html = false }` — default save location and whether to write the HTML sidecar |
+| `parts` | array | `[]` | Ordered part definitions: `[{ name, build }]` — see below |
 
 Returns:
 
@@ -27,19 +28,55 @@ Returns:
 | `theme` | The resolved theme (all color names resolved to hex) |
 | `colors` | `theme.colors` — for the rare raw-HTML escape hatch |
 | `palette(n)` | First `n` palette colors (cycling) |
+| `parts` | The parts array passed to `createProject` |
+| `build(name)` | Build a single part by name (case-insensitive) → `Promise<string>` (PDF path) |
+| `buildAll()` | Build all parts in order → `Promise<string[]>` (PDF paths) |
+
+### Parts
+
+Each entry in `parts` is `{ name: string, build: function }`. The `build` function receives a fresh `Ebook` and pushes content onto it — the project handles `book.save()` automatically. The output filename is derived from `name` (spaces → underscores, e.g. `"The Landscape"` → `The_Landscape.pdf`).
+
+`build(name)` matches case-insensitively against both the part name and its sanitized filename form, so `project.build('intro')`, `project.build('The Landscape')`, and `project.build('the_landscape')` all resolve.
 
 ```js
 // project.js
-module.exports = createProject({
+const { createProject } = require('pdfy');
+
+const project = createProject({
   title: 'Social Media Marketing Mastery in 2026',
   theme: { footer: { text: '{title}  |  Page {page}' } },
   output: { dir: `${__dirname}/output`, html: true },
+  parts: [
+    { name: 'Intro', build: require('./parts/intro') },
+    { name: 'The Landscape', build: require('./parts/the-landscape') },
+    { name: 'Brand Building', build: require('./parts/brand-building') },
+  ],
 });
 
-// build_part1.js
-const project = require('./project');
-const book = project.book();
+module.exports = project;
+
+if (require.main === module) {
+  const name = process.argv[2];
+  const run = name ? project.build(name) : project.buildAll();
+  run.catch(console.error);
+}
+
+// parts/intro.js
+module.exports = function (book) {
+  book.cover({ title: 'My Book', subtitle: 'A subtitle' });
+  book.toc([...]);
+  book.chapter(1, 'Getting Started');
+  book.p('Content goes here.');
+};
 ```
+
+Usage:
+```bash
+node project.js              # build all parts
+node project.js intro         # build one part by name
+```
+
+Parts are optional — `book()` still works standalone for single-script books.
 
 ## `new Ebook(options)`
 
